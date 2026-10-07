@@ -1,0 +1,37 @@
+server:
+  port: ${PORT:${SERVER_PORT:8081}}
+
+spring:
+  application:
+    name: eventpulse-backend
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    # Connection parameters driven by environment variables with safe local defaults (no hardcoded secrets)
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/eventpulse}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+# Spring Boot Actuator configuration for health check and observability
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+eventpulse:
+  jwt:
+    secret: ${EVENTPULSE_JWT_SECRET:${EVENTPULSE_SECURITY_JWT_SECRET}}
+    expiration-seconds: ${EVENTPULSE_JWT_EXPIRATION_SECONDS:3600}
